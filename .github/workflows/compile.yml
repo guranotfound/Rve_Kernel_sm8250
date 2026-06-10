@@ -5,13 +5,13 @@ on:
 
 jobs:
   compile:
-    runs-on: ubuntu-latest
+    # Lùi về bản 20.04 - Môi trường ổn định nhất để build Kernel Android
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v5
 
-      # Cài đặt các gói phụ thuộc bắt buộc để build Kernel trên môi trường Ubuntu trắng
       - name: Install Build Dependencies
         run: |
           sudo apt-get update
@@ -24,16 +24,46 @@ jobs:
              tar -xf clang.tar.gz -C clang
              rm clang.tar.gz
 
-      # Thay thế file compile.sh bằng các lệnh make nguyên thủy
       - name: Compile kernel
         run: |
-          # Ép hệ thống dùng đường dẫn Clang vừa tải thay vì compiler mặc định
           export PATH="$GITHUB_WORKSPACE/clang/bin:$PATH"
           export KBUILD_BUILD_USER="Rve"
           export KBUILD_BUILD_HOST="RvEnterprises"
           
-          # Thiết lập các biến biên dịch cho kiến trúc ARM64 và LLVM/Clang
           MAKE_ARGS=(
+            "O=out"
+            "ARCH=arm64"
+            "SUBARCH=arm64"
+            "CC=clang"
+            "AR=llvm-ar"
+            "NM=llvm-nm"
+            "OBJCOPY=llvm-objcopy"
+            "OBJDUMP=llvm-objdump"
+            "STRIP=llvm-strip"
+            "CROSS_COMPILE=aarch64-linux-gnu-"
+            "CROSS_COMPILE_ARM32=arm-linux-gnueabi-"
+            "LLVM=1"
+            "LLVM_IAS=1"
+          )
+
+          make "${MAKE_ARGS[@]}" vendor/xiaomi/alioth_defconfig
+          
+          make -j$(nproc --all) "${MAKE_ARGS[@]}" 2>&1 | tee out/compile.log
+
+      - name: Upload Image & DTBO
+        uses: actions/upload-artifact@v4
+        with:
+          name: RvKernel-Alioth
+          path: |
+            out/arch/arm64/boot/Image
+            out/arch/arm64/boot/dtb.img
+            out/arch/arm64/boot/dtbo.img
+
+      - name: Upload log
+        uses: actions/upload-artifact@v4
+        with:
+          name: compile-log
+          path: out/compile.log
             "O=out"
             "ARCH=arm64"
             "SUBARCH=arm64"
