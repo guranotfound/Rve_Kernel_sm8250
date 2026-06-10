@@ -64,39 +64,3 @@ jobs:
         with:
           name: compile-log
           path: out/compile.log
-            "O=out"
-            "ARCH=arm64"
-            "SUBARCH=arm64"
-            "CC=clang"
-            "AR=llvm-ar"
-            "NM=llvm-nm"
-            "OBJCOPY=llvm-objcopy"
-            "OBJDUMP=llvm-objdump"
-            "STRIP=llvm-strip"
-            "CROSS_COMPILE=aarch64-linux-gnu-"
-            "CROSS_COMPILE_ARM32=arm-linux-gnueabi-"
-            "LLVM=1"
-            "LLVM_IAS=1"
-          )
-
-          # 1. Tạo file cấu hình từ defconfig của Alioth
-          make "${MAKE_ARGS[@]}" vendor/xiaomi/alioth_defconfig
-
-          # 2. Bắt đầu quá trình Build và trích xuất log
-          # Lệnh tee giúp xuất log ra file compile.log để lát nữa upload
-          make -j$(nproc --all) "${MAKE_ARGS[@]}" 2>&1 | tee out/compile.log
-
-      - name: Upload Image & DTBO
-        uses: actions/upload-artifact@v4
-        with:
-          name: RvKernel-Alioth
-          path: |
-            out/arch/arm64/boot/Image
-            out/arch/arm64/boot/dtb.img
-            out/arch/arm64/boot/dtbo.img
-
-      - name: Upload log
-        uses: actions/upload-artifact@v4
-        with:
-          name: compile-log
-          path: out/compile.log
