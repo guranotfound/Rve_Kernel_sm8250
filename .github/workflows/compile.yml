@@ -8,7 +8,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout Source Code
+        uses: actions/checkout@v5
+
+      # Cài đặt các gói phụ thuộc bắt buộc để build Kernel trên môi trường Ubuntu trắng
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-dev libncurses5-dev libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3 libc6-dev-i386
 
       - name: Get ZyC Clang
         run: |
@@ -16,10 +23,38 @@ jobs:
              wget -qO clang.tar.gz https://github.com/ZyCromerZ/Clang/releases/download/16.0.6-20260510-release/Clang-16.0.6-20260510.tar.gz
              tar -xf clang.tar.gz -C clang
              rm clang.tar.gz
-        
 
+      # Thay thế file compile.sh bằng các lệnh make nguyên thủy
       - name: Compile kernel
-        run: ./scripts/RvCompiler/compile.sh DEFCONFIG=vendor/xiaomi/alioth_defconfig CLANG_DIR=$PWD/clang KBUILD_BUILD_USER=Rve KBUILD_BUILD_HOST=RvEnterprises
+        run: |
+          # Ép hệ thống dùng đường dẫn Clang vừa tải thay vì compiler mặc định
+          export PATH="$GITHUB_WORKSPACE/clang/bin:$PATH"
+          export KBUILD_BUILD_USER="Rve"
+          export KBUILD_BUILD_HOST="RvEnterprises"
+          
+          # Thiết lập các biến biên dịch cho kiến trúc ARM64 và LLVM/Clang
+          MAKE_ARGS=(
+            "O=out"
+            "ARCH=arm64"
+            "SUBARCH=arm64"
+            "CC=clang"
+            "AR=llvm-ar"
+            "NM=llvm-nm"
+            "OBJCOPY=llvm-objcopy"
+            "OBJDUMP=llvm-objdump"
+            "STRIP=llvm-strip"
+            "CROSS_COMPILE=aarch64-linux-gnu-"
+            "CROSS_COMPILE_ARM32=arm-linux-gnueabi-"
+            "LLVM=1"
+            "LLVM_IAS=1"
+          )
+
+          # 1. Tạo file cấu hình từ defconfig của Alioth
+          make "${MAKE_ARGS[@]}" vendor/xiaomi/alioth_defconfig
+
+          # 2. Bắt đầu quá trình Build và trích xuất log
+          # Lệnh tee giúp xuất log ra file compile.log để lát nữa upload
+          make -j$(nproc --all) "${MAKE_ARGS[@]}" 2>&1 | tee out/compile.log
 
       - name: Upload Image & DTBO
         uses: actions/upload-artifact@v4
