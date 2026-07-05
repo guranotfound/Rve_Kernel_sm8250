@@ -1112,7 +1112,7 @@ struct file *file_open_root(struct dentry *dentry, struct vfsmount *mnt,
 EXPORT_SYMBOL(file_open_root);
 
 bool task_is_powerhal(struct task_struct *p);
-static bool __maybe_unused libperfmgr_redirect(struct file **f, int dfd, struct filename *n,
+static bool libperfmgr_redirect(struct file **f, int dfd, struct filename *n,
 				struct open_flags *op, int flags)
 {
 	struct filename *redir_name;
@@ -1164,59 +1164,34 @@ static bool __maybe_unused libperfmgr_redirect(struct file **f, int dfd, struct 
 	return true;
 }
 
-#ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
-extern struct filename *susfs_open_redirect_spoof_do_sys_openat(struct inode *inode);
-#endif // #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
-
 long do_sys_open(int dfd, const char __user *filename, int flags, umode_t mode)
 {
-    struct open_flags op;
-    int fd = build_open_flags(flags, mode, &op);
-    struct filename *tmp;
-#ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
-    struct filename *fake_filename = NULL;
-    bool is_inode_open_redirect = false;
-#endif // #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
+	struct open_flags op;
+	int fd = build_open_flags(flags, mode, &op);
+	struct filename *tmp;
 
-    if (fd)
-        return fd;
+	if (fd)
+		return fd;
 
-    tmp = getname(filename);
-    if (IS_ERR(tmp))
-        return PTR_ERR(tmp);
+	tmp = getname(filename);
+	if (IS_ERR(tmp))
+		return PTR_ERR(tmp);
 
-    fd = get_unused_fd_flags(flags);
-#ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
-retry:
-#endif // #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
-    if (fd >= 0) {
-        struct file *f = do_filp_open(dfd, tmp, &op);
-#ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
-        if (!is_inode_open_redirect && f && !IS_ERR(f)) {
-            struct inode *inode = file_inode(f);
-            if (SUSFS_IS_INODE_OPEN_REDIRECT_WITHOUT_UID_CHECK(inode)) {
-                fake_filename = susfs_open_redirect_spoof_do_sys_openat(inode);
-                if (fake_filename && !IS_ERR(fake_filename)) {
-                    is_inode_open_redirect = true;
-                    filp_close(f, NULL);
-                    putname(tmp);
-                    tmp = fake_filename;
-                    goto retry;
-                }
-            }
-        }
-#endif // #ifdef CONFIG_KSU_SUSFS_OPEN_REDIRECT
-        if (IS_ERR(f)) {
-            put_unused_fd(fd);
-            fd = PTR_ERR(f);
-        } else {
-            fsnotify_open(f);
-            fd_install(fd, f);
-        }
-    }
-    putname(tmp);
-    return fd;
+	fd = get_unused_fd_flags(flags);
+	if (fd >= 0) {
+		struct file *f = do_filp_open(dfd, tmp, &op);
+		if (IS_ERR(f) && !libperfmgr_redirect(&f, dfd, tmp, &op, flags)) {
+			put_unused_fd(fd);
+			fd = PTR_ERR(f);
+		} else {
+			fsnotify_open(f);
+			fd_install(fd, f);
+		}
+	}
+	putname(tmp);
+	return fd;
 }
+
 SYSCALL_DEFINE3(open, const char __user *, filename, int, flags, umode_t, mode)
 {
 	if (force_o_largefile())

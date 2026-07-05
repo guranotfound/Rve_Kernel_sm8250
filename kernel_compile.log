@@ -1,0 +1,135 @@
+  GEN     ./Makefile
+  Using .. as source for kernel
+  CALL    ../scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  CHK     kernel/kheaders_data.tar.xz
+  CC      fs/open.o
+  CC      fs/pnode.o
+  CC      fs/splice.o
+  CC      fs/sync.o
+  CC      fs/utimes.o
+  CC      fs/d_path.o
+  CC      fs/stack.o
+  CC      fs/fs_struct.o
+  CC      fs/statfs.o
+  CC      fs/fs_pin.o
+  CC      fs/nsfs.o
+  CC      fs/fs_context.o
+  CC      fs/fs_parser.o
+  CC      fs/susfs.o
+  CC      fs/buffer.o
+  CC      fs/block_dev.o
+  CC      fs/direct-io.o
+  CC      fs/mpage.o
+  CC      fs/proc_namespace.o
+  CC      fs/eventpoll.o
+  CC      fs/anon_inodes.o
+  CC      fs/signalfd.o
+  CC      fs/timerfd.o
+  CC      fs/eventfd.o
+  CC      fs/userfaultfd.o
+  CC      fs/aio.o
+  CC      fs/locks.o
+  CC      fs/compat.o
+  CC      fs/compat_ioctl.o
+  CC      fs/binfmt_script.o
+  CC      fs/binfmt_elf.o
+  DTC     arch/arm64/boot/dts/vendor/qcom/kona.dtb
+  CC      fs/compat_binfmt_elf.o
+  DTC     arch/arm64/boot/dts/vendor/qcom/kona-v2.dtb
+  CC      fs/mbcache.o
+-- ReSukiSU version code: 35003
+-- ReSukiSU version name: v4.1.0-e8f607a2@ReSukiSU
+-- Supported Unofficial Manager: MKSU, RKSU, KOWSU, SukiSU-Ultra, ReSukiSU 
+-- KERNEL_VERSION: 4.19
+-- KERNEL_TYPE: Non-GKI
+-- ReSukiSU: using SuSFS Inline hook
+-- ReSukiSU/susfs_inline: ksu_handle_setresuid found
+-- ReSukiSU/susfs_inline: ksu_handle_execveat found
+-- ReSukiSU/susfs_inline: ksu_handle_faccessat found
+-- ReSukiSU/susfs_inline: ksu_handle_sys_read found
+-- ReSukiSU/susfs_inline: ksu_handle_stat found
+-- ReSukiSU/susfs_inline: ksu_handle_sys_reboot found
+-- ReSukiSU/susfs_inline: ksu_handle_input_handle_event found
+
+-- SUSFS_VERSION: v2.2.0
+-- ReSukiSU/compat: current_sid found
+-- ReSukiSU/compat: selinux_state found
+-- ReSukiSU/compat: strncpy found
+-- ReSukiSU/compat: kernel_read found
+-- ReSukiSU/compat: kernel_write found
+  DTC     arch/arm64/boot/dts/vendor/qcom/kona-v2.1.dtb
+  CC      fs/posix_acl.o
+-- ReSukiSU/compat: selinux_inode found
+-- ReSukiSU/compat: selinux_cred found
+-- ReSukiSU/compat: seccomp_filter_count found
+-- ReSukiSU/compat: security_inode_init_security_anon found
+-- ReSukiSU/compat: anon_inode_getfd_secure found
+-- ReSukiSU/compat: file_inode() found
+-- ReSukiSU/compat: ns_get_path found
+-- ReSukiSU/compat: modern dentry_open found
+-- ReSukiSU/compat: ext4_unregister_sysfs found
+-- ReSukiSU/compat: f_op->read_iter found
+-- ReSukiSU/compat: iterate_dir found
+-- ReSukiSU/compat: modern static_key_interface found
+-- ReSukiSU/compat: d_inode found
+-- ReSukiSU/compat: inode_lock found
+-- ReSukiSU/compat: modern errno file found
+-- ReSukiSU/compat: overflow.h found
+-- ReSukiSU/compat: modern proc ns header file found
+-- ReSukiSU/compat: android spec POLICYDB_CONFIG_ANDROID_NETLINK_ROUTE found!!
+  CC      fs/coredump.o
+-- ReSukiSU/compat: android spec POLICYDB_CONFIG_ANDROID_NETLINK_GETNEIGH found!!
+-- ReSukiSU/compat: found sidtab as reference
+-- ReSukiSU/compat: found hlist in security_hook_list
+-- ReSukiSU/compat: found required provide lsm name
+-- ReSukiSU/compat: found security_add_hooks
+  CC      fs/drop_caches.o
+  CC      fs/iomap.o
+  CC      fs/dcookies.o
+  DTC     arch/arm64/boot/dts/vendor/qcom/alioth-sm8250-overlay.dtbo
+  DTC     arch/arm64/boot/dts/vendor/qcom/apollo-sm8250-overlay.dtbo
+  DTC     arch/arm64/boot/dts/vendor/qcom/cas-sm8250-overlay.dtbo
+  DTC     arch/arm64/boot/dts/vendor/qcom/cmi-sm8250-overlay.dtbo
+  DTC     arch/arm64/boot/dts/vendor/qcom/dagu-sm8250-overlay.dtbo
+  DTC     arch/arm64/boot/dts/vendor/qcom/elish-sm8250-overlay.dtbo
+  AR      fs/built-in.a
+  DTC     arch/arm64/boot/dts/vendor/qcom/enuma-sm8250-overlay.dtbo
+  DTC     arch/arm64/boot/dts/vendor/qcom/lmi-sm8250-overlay.dtbo
+  DTC     arch/arm64/boot/dts/vendor/qcom/munch-sm8250-overlay.dtbo
+  DTC     arch/arm64/boot/dts/vendor/qcom/psyche-sm8250-overlay.dtbo
+  DTC     arch/arm64/boot/dts/vendor/qcom/thyme-sm8250-overlay.dtbo
+  DTC     arch/arm64/boot/dts/vendor/qcom/umi-sm8250-overlay.dtbo
+  DTBOIMG arch/arm64/boot/dtbo.img
+  DTC     arch/arm64/boot/dts/vendor/qcom/kona.dtb
+  DTC     arch/arm64/boot/dts/vendor/qcom/kona-v2.dtb
+  DTC     arch/arm64/boot/dts/vendor/qcom/kona-v2.1.dtb
+  CAT     arch/arm64/boot/dtb.img
+  GEN     .version
+  CHK     include/generated/compile.h
+  AR      built-in.a
+  LTO     vmlinux.o
+  MODPOST vmlinux.o
+  KSYM    .tmp_kallsyms1.o
+  KSYM    .tmp_kallsyms2.o
+  LD      vmlinux
+  SORTEX  vmlinux
+  SYSMAP  System.map
+  OBJCOPY arch/arm64/boot/Image
+  Building modules, stage 2.
+  LD [M]  drivers/media/usb/gspca/gspca_main.lto.o
+  LD [M]  net/ipv4/tcp_bic.lto.o
+  LD [M]  net/ipv4/tcp_htcp.lto.o
+  LD [M]  techpack/data/drivers/rmnet/perf/rmnet_perf.lto.o
+  LD [M]  techpack/data/drivers/rmnet/shs/rmnet_shs.lto.o
+  MODPOST 5 modules
+  CC      drivers/media/usb/gspca/gspca_main.mod.o
+  CC      net/ipv4/tcp_bic.mod.o
+  CC      techpack/data/drivers/rmnet/perf/rmnet_perf.mod.o
+  CC      techpack/data/drivers/rmnet/shs/rmnet_shs.mod.o
+  CC      net/ipv4/tcp_htcp.mod.o
+  LD [M]  techpack/data/drivers/rmnet/perf/rmnet_perf.ko
+  LD [M]  techpack/data/drivers/rmnet/shs/rmnet_shs.ko
+  LD [M]  net/ipv4/tcp_htcp.ko
+  LD [M]  net/ipv4/tcp_bic.ko
+  LD [M]  drivers/media/usb/gspca/gspca_main.ko
